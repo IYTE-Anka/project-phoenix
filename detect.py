@@ -106,7 +106,6 @@ def run(model: str, camera_id: int, width: int, height: int) -> None:
   cv2.destroyAllWindows()
 
 model_path = os.path.join(os.path.dirname(__file__), 'ssd_mobilenet_v2.tflite')
-model_path = u"{}".format(model_path)
 
 def main():
   parser = argparse.ArgumentParser(
@@ -136,5 +135,4 @@ def main():
 
 
 if __name__ == '__main__':
-  print(model_path)
   main()

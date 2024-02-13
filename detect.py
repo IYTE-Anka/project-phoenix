@@ -48,8 +48,13 @@ def run(model: str, camera_id: int, width: int, height: int) -> None:
       detection_result_list.append(result)
 
 
+  # Load the TFLite model
+  model_file = open(model, "rb")
+  model_data = model_file.read()
+  model_file.close()
+
   # Initialize the object detection model
-  base_options = python.BaseOptions(model_asset_path=model)
+  base_options = python.BaseOptions(model_asset_buffer=model_data) # Load buffered TFLite model
   options = vision.ObjectDetectorOptions(base_options=base_options,
                                          running_mode=vision.RunningMode.LIVE_STREAM,
                                          score_threshold=0.5,
@@ -105,7 +110,6 @@ def run(model: str, camera_id: int, width: int, height: int) -> None:
   cap.release()
   cv2.destroyAllWindows()
 
-model_path = os.path.join(os.path.dirname(__file__), 'ssd_mobilenet_v2.tflite')
 
 def main():
   parser = argparse.ArgumentParser(
@@ -114,7 +118,7 @@ def main():
       '--model',
       help='Path of the object detection model.',
       required=False,
-      default=model_path)
+      default='ssd_mobilenet_v2.tflite')
   parser.add_argument(
       '--cameraId', help='Id of camera.', required=False, type=int, default=0)
   parser.add_argument(

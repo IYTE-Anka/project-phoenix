@@ -10,6 +10,8 @@ from mediapipe.tasks.python import vision
 
 from utils import visualize
 
+import os
+
 
 def run(model: str, camera_id: int, width: int, height: int) -> None:
   """Continuously run inference on images acquired from the camera.

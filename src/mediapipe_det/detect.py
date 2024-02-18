@@ -111,8 +111,8 @@ def run(model: str, camera_id: int, width: int, height: int) -> None:
 
 
 def main():
-  model_name = 'ssd_mobilenet_v2.tflite' # Change this to the name of the model you want to use
-  model_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'models', model_name)
+  model_name = 'efficientdet_lite0.tflite' # Change this to the name of the model you want to use
+  model_path = os.path.join((os.path.dirname(__file__)), 'models', model_name)
   
   parser = argparse.ArgumentParser(
       formatter_class=argparse.ArgumentDefaultsHelpFormatter)

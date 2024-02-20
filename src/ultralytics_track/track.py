@@ -9,7 +9,7 @@ model_path = os.path.join(os.path.dirname(__file__), "models", model_filename)
 model = YOLO(model_path)
 
 # load video
-video_path = 0
+video_path = os.path.join(os.path.dirname(__file__), "test.mp4") # Replace variable with 0 for webcam
 cap = cv2.VideoCapture(video_path)
 
 ret = True

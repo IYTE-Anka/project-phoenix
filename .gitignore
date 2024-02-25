@@ -161,6 +161,3 @@ cython_debug/
 
 # Test Files
 test.py
-
-# Custom Balloon Detection Model - Training Dataset
-Blimp_Yolo_v8_Custom.v1i.yolov8

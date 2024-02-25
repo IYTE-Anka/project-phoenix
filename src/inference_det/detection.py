@@ -4,6 +4,8 @@ from inference.core.interfaces.stream.sinks import render_boxes
 import os
 from dotenv import load_dotenv
 
+# THIS SCRIPT REQUIRES INTERNET ACCESS TO WORK
+
 load_dotenv()
 ROBOFLOW_API_KEY = os.getenv("ROBOFLOW_API_KEY")
 

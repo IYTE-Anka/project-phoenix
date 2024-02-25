@@ -7,4 +7,5 @@ model_filename = 'anka_v1.pt'
 model_path = os.path.join(os.path.dirname(__file__), "models", model_filename)
 model = YOLO(model_path)
 
-results = model.track(source=0, show=True)
+source_path = os.path.join(os.path.dirname(__file__), "balloon_video.mp4") # Path to video, device id (int, usually 0 for built in webcams)
+results = model.track(source=source_path, show=True)

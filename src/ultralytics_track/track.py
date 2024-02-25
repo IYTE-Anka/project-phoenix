@@ -2,32 +2,9 @@ from ultralytics import YOLO
 import cv2
 import os
 
-
-# load yolov8 model
-model_filename = 'yolov8n.pt'
+# Load YOLOV8 Model
+model_filename = 'anka_v1.pt'
 model_path = os.path.join(os.path.dirname(__file__), "models", model_filename)
 model = YOLO(model_path)
 
-# load video
-video_path = os.path.join(os.path.dirname(__file__), "test.mp4") # Replace variable with 0 for webcam
-cap = cv2.VideoCapture(video_path)
-
-ret = True
-# read frames
-while ret:
-    ret, frame = cap.read()
-    
-    if ret:
-        # detect objects
-        # track objects
-        results = model.track(frame, persist=True)
-
-        # plot results
-        # cv2.rectangle
-        # cv2.putText
-        frame_ = results[0].plot()
-
-        # visualize
-        cv2.imshow('frame', frame_)
-        if cv2.waitKey(25) & 0xFF == ord('q'):
-            break
+results = model.track(source=0, show=True)

@@ -1,4 +1,4 @@
-inference==0.9.8
+inference==0.9.15
 inference_gpu==0.9.8
 mediapipe==0.10.10
 numpy==1.24.4

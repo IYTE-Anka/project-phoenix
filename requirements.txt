@@ -1,7 +1,7 @@
 inference==0.9.8
 inference_gpu==0.9.8
 mediapipe==0.10.10
-numpy==1.24.4
+numpy==1.26.4
 opencv_contrib_python==4.9.0.80
 opencv_python==4.8.0.76
 opencv_python_headless==4.9.0.80

@@ -8,4 +8,4 @@ updates:
   - package-ecosystem: "pip"
     directory: "/"  # Specify the directory where your Python requirements.txt or setup.py file resides
     schedule:
-      interval: "weekly"  # You can change this to adjust how often Dependabot checks for updates
+      interval: "monthly"  # You can change this to adjust how often Dependabot checks for updates

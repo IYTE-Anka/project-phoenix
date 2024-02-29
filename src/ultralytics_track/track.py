@@ -1,16 +1,36 @@
 from ultralytics import YOLO
 import os
+import argparse
 
-# Load YOLOV8 Model
-model_filename = 'anka_v1.pt'
-model_path = os.path.join(os.path.dirname(__file__), "models", model_filename)
-model = YOLO(model_path)
+def main():
+  parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+  parser.add_argument(
+      '--source', 
+      help='Path of the video or camera id.', 
+      required=False, 
+      default=os.path.join(os.path.dirname(__file__), "balloon_vid_trim.mp4")
+    )
+  parser.add_argument(
+      '--model', 
+      help='Path of the object detection model.', 
+      required=False, 
+      default=os.path.join(os.path.dirname(__file__), "models", "anka_v1.pt")
+    )
+  args = parser.parse_args()
 
-source_path = os.path.join(os.path.dirname(__file__), "balloon_video.mp4") # Path to video, device id (int, usually 0 for built in webcams)
+  source_path = os.path.join(os.path.dirname(__file__), args.source)
+  model_path = os.path.join(os.path.dirname(__file__), "models", args.model)
+  
+  run(source_path, model_path)
+    
+def run(source_path, model_path):
+  # Show and save results to project folder
+  model = YOLO(model_path)
+  for r in model.track(source=source_path, show=True, stream=True, persist=True, save=True, project=os.path.join(os.path.dirname(__file__), "val")):
+      pass
+  # DEPRECATED: results = model.track(source=source_path, show=True, persist=True, save=True, project=os.path.join(os.path.dirname(__file__), "val"))
 
-# Show and save results to project folder
-for r in model.track(source=source_path, show=True, stream=True, persist=True, save=True, project=os.path.join(os.path.dirname(__file__), "val")):
-    pass
-# DEPRECATED: results = model.track(source=source_path, show=True, persist=True, save=True, project=os.path.join(os.path.dirname(__file__), "val"))
+  # TODO: Put points on the center of the bounding boxes
 
-# TODO: Put points on the center of the bounding boxes
+if __name__ == "__main__":
+  main()

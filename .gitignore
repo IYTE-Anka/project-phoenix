@@ -161,3 +161,6 @@ cython_debug/
 
 # Test Files
 test.py
+
+# Track Validation Files
+src/ultralytics_track/track

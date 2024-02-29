@@ -1,4 +1,4 @@
-# ANKA Balloon Detection Model Details
+# ANKA Özel Balon Tespit Modelleri
 
 ## anka_v0.pt,
 

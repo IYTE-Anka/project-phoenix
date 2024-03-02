@@ -12,4 +12,10 @@
 - Eğitimde kullanılan YOLOv8 model çeşidi: `yolov8n.pt`
 - Averaj kare işleme hızı: **~90ms**
 
+## anka_v2.pt
+
+- Eğitildiği veri seti: [Skytech Dataset](https://universe.roboflow.com/robot-arzfa/skytech)
+- Eğitimde kullanılan YOLOv8 model çeşidi: `yolov8n.pt`
+- Averaj kare işleme hızı: **~70ms**
+
 `yolov8m.pt` ve `yolov8n.pt` gibi farklı YOLOv8 modelleri arasındaki farkları [Ultralytics Dokümentasyon](https://docs.ultralytics.com/models/yolov8/#performance-metrics) sitesinde bulabilirsiniz.

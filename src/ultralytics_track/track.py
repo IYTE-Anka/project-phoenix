@@ -8,7 +8,7 @@ def main():
       '--source', 
       help='Path of the video or camera id.', 
       required=False, 
-      default=os.path.join(os.path.dirname(__file__), "balloon_vid_trim.mp4")
+      default=os.path.join(os.path.dirname(__file__), "testing", "yt_trim.mp4")
     )
   parser.add_argument(
       '--model', 
@@ -18,7 +18,7 @@ def main():
     )
   args = parser.parse_args()
 
-  source_path = os.path.join(os.path.dirname(__file__), args.source)
+  source_path = os.path.join(os.path.dirname(__file__), "testing", args.source)
   model_path = os.path.join(os.path.dirname(__file__), "models", args.model)
   
   run(source_path, model_path)

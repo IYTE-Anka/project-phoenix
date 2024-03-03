@@ -164,3 +164,9 @@ test.py
 
 # Track Validation Files
 src/ultralytics_track/val
+
+# Model Training Datasets
+datasets/
+
+# Model Training Results
+runs/

@@ -32,5 +32,7 @@ def run(source_path, model_path):
 
   # TODO: Put points on the center of the bounding boxes
 
+  # TODO: Implement detection on images (check file extension and use appropriate method)
+
 if __name__ == "__main__":
   main()

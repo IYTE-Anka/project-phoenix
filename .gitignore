@@ -163,7 +163,7 @@ cython_debug/
 test.py
 
 # Track Validation Files
-src/ultralytics_track/val
+src/ultralytics_track/demo
 
 # Model Training Stuff
 datasets/

@@ -20,7 +20,7 @@ def main():
       '--conf', 
       help='Path of the object detection model.', 
       required=False, 
-      default=0.40
+      default=0.30
     )
   args = parser.parse_args()
 
@@ -33,7 +33,7 @@ def main():
 def run(source_path, model_path, conf_threshold):
   # Show and save results to project folder
   model = YOLO(model_path)
-  for r in model.track(source=source_path, show=True, stream=True, persist=True, save=True, conf=conf_threshold, project=os.path.join(os.path.dirname(__file__), "demo")):
+  for r in model.track(source=source_path, show=True, stream=True, persist=True, save=True, conf=float(conf_threshold), project=os.path.join(os.path.dirname(__file__), "demo")):
       pass
   # DEPRECATED: results = model.track(source=source_path, show=True, persist=True, save=True, project=os.path.join(os.path.dirname(__file__), "val"))
 

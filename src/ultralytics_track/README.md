@@ -1,20 +1,26 @@
 # ANKA Özel Balon Tespit Modelleri
 
-## anka_v1.0.pt,
-
+## Anka V1:
 - Eğitildiği veri seti: [Blimp_Yolov8_Custom Dataset](https://universe.roboflow.com/prasku-mxsdv/blimp_yolo_v8_custom)
+
+# anka_v1.0.pt
 - Eğitimde kullanılan YOLOv8 model çeşidi: `yolov8m.pt`
 - Averaj kare işleme hızı: **~300ms**
 - Parametreler: epochs=20 imgsz=640
 
-## anka_v2.0.pt
+# anka_v1.1.pt
+- Eğitimde kullanılan YOLOv8 model çeşidi: `yolov8s.pt`
+- Averaj kare işleme hızı: **~150ms**
+- Parametreler: epochs=20 imgsz=640
+
+## Anka V2
 
 - Eğitildiği veri seti: [Balloon_2 Dataset](https://universe.roboflow.com/balloon-mytgt/balloon2-wklvy)
 - Eğitimde kullanılan YOLOv8 model çeşidi: `yolov8n.pt`
 - Averaj kare işleme hızı: **~90ms**
 ,- Parametreler: epochs=20 imgsz=640
 
-## anka_v3.0.pt
+## Anka V3
 
 - Eğitildiği veri seti: [Skytech Dataset](https://universe.roboflow.com/robot-arzfa/skytech)
 - Eğitimde kullanılan YOLOv8 model çeşidi: `yolov8n.pt`

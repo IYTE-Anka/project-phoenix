@@ -8,7 +8,7 @@ def main():
       '--source', 
       help='Path of the video or camera id.', 
       required=False, 
-      default=os.path.join(os.path.dirname(__file__), "testing", "yt_trim.mp4")
+      default=os.path.join(os.path.dirname(__file__), "testing", "red_v1.mp4")
     )
   parser.add_argument(
       '--model', 
@@ -26,7 +26,7 @@ def main():
 def run(source_path, model_path):
   # Show and save results to project folder
   model = YOLO(model_path)
-  for r in model.track(source=source_path, show=True, stream=True, persist=True, save=True, project=os.path.join(os.path.dirname(__file__), "val")):
+  for r in model.track(source=source_path, show=True, stream=True, persist=True, save=True, project=os.path.join(os.path.dirname(__file__), "demo")):
       pass
   # DEPRECATED: results = model.track(source=source_path, show=True, persist=True, save=True, project=os.path.join(os.path.dirname(__file__), "val"))
 

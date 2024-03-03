@@ -14,7 +14,7 @@ def main():
       '--model', 
       help='Path of the object detection model.', 
       required=False, 
-      default=os.path.join(os.path.dirname(__file__), "models", "anka_v1.pt")
+      default=os.path.join(os.path.dirname(__file__), "models", "anka_v1.0.pt")
     )
   args = parser.parse_args()
 
@@ -31,8 +31,6 @@ def run(source_path, model_path):
   # DEPRECATED: results = model.track(source=source_path, show=True, persist=True, save=True, project=os.path.join(os.path.dirname(__file__), "val"))
 
   # TODO: Put points on the center of the bounding boxes
-
-  # TODO: Implement detection on images (check file extension and use appropriate method)
 
 if __name__ == "__main__":
   main()

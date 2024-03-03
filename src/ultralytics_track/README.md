@@ -5,12 +5,12 @@
 
 ### Anka v1.0 (GC)
 - Eğitimde kullanılan YOLOv8 model çeşidi: `yolov8m.pt`
-- Averaj kare işleme hızı: **~300ms**
+- Averaj kare işleme hızı: **~17ms**
 - Parametreler: epochs=20 imgsz=640
 
 ### Anka v1.1 (GC)
 - Eğitimde kullanılan YOLOv8 model çeşidi: `yolov8s.pt`
-- Averaj kare işleme hızı: **~150ms**
+- Averaj kare işleme hızı: **~10ms**
 - Parametreler: epochs=20 imgsz=640
 
 ## Anka V2
@@ -18,12 +18,12 @@
 
 ### Anka v2.0 (GC)
 - Eğitimde kullanılan YOLOv8 model çeşidi: `yolov8n.pt`
-- Averaj kare işleme hızı: **~90ms**
+- Averaj kare işleme hızı: **~10ms**
 - Parametreler: epochs=20 imgsz=640
 
 ### Anka v2.1 (Lokal)
 - Eğitimde kullanılan YOLOv8 model çeşidi: `yolov8n.pt`
-- Averaj kare işleme hızı: **~15ms**
+- Averaj kare işleme hızı: **~10ms**
 - Parametreler: epochs=20 imgsz=640
 
 ## Anka V3
@@ -31,7 +31,7 @@
 
 ### Anka v3.0 (GC)
 - Eğitimde kullanılan YOLOv8 model çeşidi: `yolov8n.pt`
-- Averaj kare işleme hızı: **~70ms**
+- Averaj kare işleme hızı: **~10ms**
 - Parametreler: epochs=40 imgsz=640
 
 YOLOv8 modelleri arasındaki farkları [Ultralytics Dokümentasyon](https://docs.ultralytics.com/models/yolov8/#performance-metrics) sitesinde bulabilirsiniz.

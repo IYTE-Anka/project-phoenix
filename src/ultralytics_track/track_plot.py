@@ -75,6 +75,28 @@ def run(source_path, model_path, conf_threshold):
         points = np.hstack(track).astype(np.int32).reshape((-1, 1, 2))
         cv2.polylines(annotated_frame, [points], isClosed=False, color=(230, 230, 230), thickness=10)
 
+      hsvFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+      # Set range for red color and  
+      # define mask 
+      red_lower = np.array([136, 87, 111], np.uint8) 
+      red_upper = np.array([180, 255, 255], np.uint8) 
+      red_mask = cv2.inRange(hsvFrame, red_lower, red_upper) 
+      kernel = np.ones((5, 5), "uint8") 
+
+      # For red color 
+      red_mask = cv2.dilate(red_mask, kernel) 
+      res_red = cv2.bitwise_and(frame, frame, mask = red_mask) 
+
+      # Creating contour to track red color 
+      contours, hierarchy = cv2.findContours(red_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE) 
+        
+      for pic, contour in enumerate(contours): 
+        area = cv2.contourArea(contour) 
+        if(area > 300): 
+          x, y, w, h = cv2.boundingRect(contour) 
+          # annotated_frame = cv2.rectangle(annotated_frame, (x, y),  (x + w, y + h), (0, 0, 255), 2) REMOVE RED RECTANGLE 
+          cv2.putText(annotated_frame, "Red", (x, y+25), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255))   
+
       # Display the annotated frame
       cv2.imshow("ANKA Balon Tespit", annotated_frame)
 

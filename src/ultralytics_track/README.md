@@ -21,6 +21,11 @@
 - Averaj kare işleme hızı: **~10ms**
 - Parametreler: epochs=20 imgsz=640
 
+### Anka v2.1 (Lokal)
+- Eğitimde kullanılan YOLOv8 model çeşidi: `yolov8s.pt`
+- Averaj kare işleme hızı: **~15ms**
+- Parametreler: epochs=20 imgsz=640
+
 ## Anka V3
 - Eğitildiği veri seti: [Skytech Dataset](https://universe.roboflow.com/robot-arzfa/skytech)
 

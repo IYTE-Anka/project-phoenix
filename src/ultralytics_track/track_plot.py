@@ -117,6 +117,10 @@ def run(source_path, model_path, conf_threshold, color):
             # annotated_frame = cv2.rectangle(annotated_frame, (x, y),  (x + w, y + h), (0, 0, 255), 2) REMOVE RED RECTANGLE 
             cv2.putText(annotated_frame, "Red", (x, y+25), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255))   
 
+      # Display FPS
+      fps = str(int(cap.get(cv2.CAP_PROP_FPS)))
+      cv2.putText(annotated_frame, fps, (0, 25), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 3, cv2.LINE_AA)
+
       # Display the annotated frame
       cv2.imshow("ANKA Balon Tespit", annotated_frame)
 

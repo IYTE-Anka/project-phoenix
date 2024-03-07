@@ -16,12 +16,7 @@
 ## Anka V2
 - Eğitildiği veri seti: [Balloon_2 Dataset](https://universe.roboflow.com/balloon-mytgt/balloon2-wklvy)
 
-### Anka v2.0 (GC)
-- Eğitimde kullanılan YOLOv8 model çeşidi: `yolov8n.pt`
-- Averaj kare işleme hızı: **~10ms**
-- Parametreler: epochs=20 imgsz=640
-
-### Anka v2.1 (Lokal)
+### Anka v2.0 (Lokal)
 - Eğitimde kullanılan YOLOv8 model çeşidi: `yolov8n.pt`
 - Averaj kare işleme hızı: **~10ms**
 - Parametreler: epochs=20 imgsz=640

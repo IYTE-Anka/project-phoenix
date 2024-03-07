@@ -49,6 +49,9 @@ def main():
   
   run(source_path, model_path, conf_threshold, args.color)
 
+# TODO: Implement proccessing of images
+# TODO: Put marking on the center of the bounding boxes
+
 def run(source_path, model_path, conf_threshold, color):
   # Load the YOLOv8 model
   model = YOLO(model_path)
@@ -65,12 +68,14 @@ def run(source_path, model_path, conf_threshold, color):
     success, frame = cap.read()
 
     if success:
+      # SECTION: OBJECT DETECTION
       # Run YOLOv8 tracking on the frame, persisting tracks between frames
       results = model.track(frame, persist=True, tracker="bytetrack.yaml", conf=conf_threshold)
 
       # Visualize the results on the frame
       annotated_frame = results[0].plot()
 
+      # SECTION: TRAJECTORY PLOTTING
       if results[0].boxes is not None and results[0].boxes.id is not None: # Fixes issue#13 - Video stops in the output when there is no detection 
         # Get the boxes and track IDs
         boxes = results[0].boxes.xywh.cpu()
@@ -88,6 +93,7 @@ def run(source_path, model_path, conf_threshold, color):
           points = np.hstack(track).astype(np.int32).reshape((-1, 1, 2))
           cv2.polylines(annotated_frame, [points], isClosed=False, color=(230, 230, 230), thickness=10)
 
+      # SECTION: COLOR TRACKING
       if color: # Check if color tracking is enabled
         hsvFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
         # Set range for red color and  

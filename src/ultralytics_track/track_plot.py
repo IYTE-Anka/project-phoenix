@@ -50,7 +50,6 @@ def main():
   run(source_path, model_path, conf_threshold, args.color)
 
 # TODO: Implement proccessing of images
-# TODO: Put marking on the center of the bounding boxes
 
 def run(source_path, model_path, conf_threshold, color):
   # Load the YOLOv8 model
@@ -92,6 +91,7 @@ def run(source_path, model_path, conf_threshold, color):
           # Draw the tracking lines
           points = np.hstack(track).astype(np.int32).reshape((-1, 1, 2))
           cv2.polylines(annotated_frame, [points], isClosed=False, color=(230, 230, 230), thickness=10)
+          cv2.circle(annotated_frame, (int(x), int(y)), 5, (0, 0, 0), -1) # Put circle on the center of the balloons bboxes
 
       # SECTION: COLOR TRACKING
       if color: # Check if color tracking is enabled

@@ -69,7 +69,7 @@ def run(source_path, model_path, conf_threshold, color):
     if success:
       # SECTION: OBJECT DETECTION
       # Run YOLOv8 tracking on the frame, persisting tracks between frames
-      results = model.track(frame, persist=True, tracker="bytetrack.yaml", conf=conf_threshold)
+      results = model.track(frame, persist=True, tracker="bytetrack.yaml", conf=conf_threshold, device=0)
 
       # Visualize the results on the frame
       annotated_frame = results[0].plot()

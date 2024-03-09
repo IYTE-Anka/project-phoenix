@@ -4,13 +4,18 @@
 - Eğitildiği veri seti: [Blimp_Yolov8_Custom Dataset](https://universe.roboflow.com/prasku-mxsdv/blimp_yolo_v8_custom)
 
 ### Anka v1.0 (GC)
+- Eğitimde kullanılan YOLOv8 model çeşidi: `yolov8s.pt`
+- Averaj kare işleme hızı: **~10ms**
+- Parametreler: epochs=20 imgsz=640
+
+### Anka v1.1 (GC)
 - Eğitimde kullanılan YOLOv8 model çeşidi: `yolov8m.pt`
 - Averaj kare işleme hızı: **~17ms**
 - Parametreler: epochs=20 imgsz=640
 
-### Anka v1.1 (GC)
-- Eğitimde kullanılan YOLOv8 model çeşidi: `yolov8s.pt`
-- Averaj kare işleme hızı: **~10ms**
+### Anka v1.2 (GC)
+- Eğitimde kullanılan YOLOv8 model çeşidi: `yolov8l.pt`
+- Averaj kare işleme hızı: **~22ms**
 - Parametreler: epochs=20 imgsz=640
 
 ## Anka V2

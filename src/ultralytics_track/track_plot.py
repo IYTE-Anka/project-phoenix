@@ -108,14 +108,34 @@ def run(source_path, model_path, conf_threshold, color):
         res_red = cv2.bitwise_and(frame, frame, mask = red_mask) 
 
         # Creating contour to track red color 
-        contours, hierarchy = cv2.findContours(red_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE) 
-          
-        for pic, contour in enumerate(contours): 
+        red_contours, hierarchy = cv2.findContours(red_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE) 
+
+        for pic, contour in enumerate(red_contours): 
           area = cv2.contourArea(contour) 
           if(area > 300): 
             x, y, w, h = cv2.boundingRect(contour) 
-            # annotated_frame = cv2.rectangle(annotated_frame, (x, y),  (x + w, y + h), (0, 0, 255), 2) REMOVE RED RECTANGLE 
-            cv2.putText(annotated_frame, "Red", (x, y+25), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255))   
+            annotated_frame = cv2.rectangle(annotated_frame, (x, y),  (x + w, y + h), (0, 0, 255), 2)
+            cv2.putText(annotated_frame, "Red", (x, y+25), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255)) 
+
+        # Set range for green color and  
+        # define mask 
+        green_lower = np.array([40, 40, 40], np.uint8) 
+        green_upper = np.array([70, 255, 255], np.uint8) 
+        green_mask = cv2.inRange(hsvFrame, green_lower, green_upper) 
+
+        # For green color 
+        green_mask = cv2.dilate(green_mask, kernel) 
+        res_green = cv2.bitwise_and(frame, frame, mask = green_mask) 
+
+        # Creating contour to track green color 
+        green_contours, hierarchy = cv2.findContours(green_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE) 
+
+        for pic, contour in enumerate(green_contours): 
+          area = cv2.contourArea(contour) 
+          if(area > 300): 
+            x, y, w, h = cv2.boundingRect(contour) 
+            annotated_frame = cv2.rectangle(annotated_frame, (x, y),  (x + w, y + h), (0, 255, 0), 2)
+            cv2.putText(annotated_frame, "Green", (x, y+25), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0))
 
       # Display FPS
       fps = str(int(cap.get(cv2.CAP_PROP_FPS)))

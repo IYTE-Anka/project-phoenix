@@ -115,7 +115,7 @@ def run(source_path, model_path, conf_threshold, color):
           if(area > 300): 
             x, y, w, h = cv2.boundingRect(contour) 
             annotated_frame = cv2.rectangle(annotated_frame, (x, y),  (x + w, y + h), (0, 0, 255), 2)
-            cv2.putText(annotated_frame, "Red", (x, y+25), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255)) 
+            cv2.putText(annotated_frame, "Kirmizi", (x, y+25), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255)) 
 
         # Set range for green color and  
         # define mask 
@@ -135,7 +135,7 @@ def run(source_path, model_path, conf_threshold, color):
           if(area > 300): 
             x, y, w, h = cv2.boundingRect(contour) 
             annotated_frame = cv2.rectangle(annotated_frame, (x, y),  (x + w, y + h), (0, 255, 0), 2)
-            cv2.putText(annotated_frame, "Green", (x, y+25), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0))
+            cv2.putText(annotated_frame, "Yesil", (x, y+25), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0))
 
       # Display FPS
       fps = str(int(cap.get(cv2.CAP_PROP_FPS)))

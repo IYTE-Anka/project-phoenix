@@ -17,7 +17,7 @@ def main():
       '--model', 
       help='Path of the object detection model.', 
       required=False, 
-      default=os.path.join(os.path.dirname(__file__), "models", "anka_v1.0.pt")
+      default=os.path.join(os.path.dirname(__file__), "models", "anka_v1.2.pt")
     )
   parser.add_argument(
       '--conf', 

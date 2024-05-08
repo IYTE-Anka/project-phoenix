@@ -43,7 +43,11 @@ def main():
 
   args = parser.parse_args()
 
-  source_path = os.path.join(os.path.dirname(__file__), "testing", args.source)
+  if int(args.source) != 0:
+    source_path = os.path.join(os.path.dirname(__file__), "testing", args.source)
+  else:
+    source_path = int(args.source)
+
   model_path = os.path.join(os.path.dirname(__file__), "models", args.model)
   conf_threshold = float(args.conf)
   
@@ -73,7 +77,7 @@ def run(source_path, model_path, conf_threshold, color):
 
       # Visualize the results on the frame
       annotated_frame = results[0].plot()
-
+      boxes = None
       # SECTION: TRAJECTORY PLOTTING
       if results[0].boxes is not None and results[0].boxes.id is not None: # Fixes Issue#13 - Video stops in the output when there is no detection 
         # Get the boxes and track IDs
@@ -114,11 +118,12 @@ def run(source_path, model_path, conf_threshold, color):
           area = cv2.contourArea(contour) 
           if(area > 300): 
             x, y, w, h = cv2.boundingRect(contour) 
-            for box, track_id in zip(boxes, track_ids): # Fixes Issue#14 - Color detection running in unwanted sections
-              Bx, By, Bw, Bh = box
-              if abs(Bx-Bw) < x < abs(Bx+Bw) and abs(By-Bh) < y < abs(By+Bh):
-                annotated_frame = cv2.rectangle(annotated_frame, (x, y),  (x + w, y + h), (0, 0, 255), 2)
-                cv2.putText(annotated_frame, "Kirmizi", (x, y+25), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255)) 
+            if boxes is not None:
+              for box, track_id in zip(boxes, track_ids): # Fixes Issue#14 - Color detection running in unwanted sections
+                Bx, By, Bw, Bh = box
+                if abs(Bx-Bw) < x < abs(Bx+Bw) and abs(By-Bh) < y < abs(By+Bh):
+                  annotated_frame = cv2.rectangle(annotated_frame, (x, y),  (x + w, y + h), (0, 0, 255), 2)
+                  cv2.putText(annotated_frame, "Kirmizi", (x, y+25), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255)) 
 
         # Set range for green color and  
         # define mask 
@@ -137,11 +142,36 @@ def run(source_path, model_path, conf_threshold, color):
           area = cv2.contourArea(contour) 
           if(area > 300): 
             x, y, w, h = cv2.boundingRect(contour) 
-            for box, track_id in zip(boxes, track_ids): # Fixes Issue#14 - Color detection running in unwanted sections
-              Bx, By, Bw, Bh = box
-              if abs(Bx-Bw) < x < abs(Bx+Bw) and abs(By-Bh) < y < abs(By+Bh):
-                annotated_frame = cv2.rectangle(annotated_frame, (x, y),  (x + w, y + h), (0, 255, 0), 2)
-                cv2.putText(annotated_frame, "Yesil", (x, y+25), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0))
+            if boxes is not None:
+              for box, track_id in zip(boxes, track_ids): # Fixes Issue#14 - Color detection running in unwanted sections
+                Bx, By, Bw, Bh = box
+                if abs(Bx-Bw) < x < abs(Bx+Bw) and abs(By-Bh) < y < abs(By+Bh):
+                  annotated_frame = cv2.rectangle(annotated_frame, (x, y),  (x + w, y + h), (0, 255, 0), 2)
+                  cv2.putText(annotated_frame, "Yesil", (x, y+25), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0))
+
+        # Set range for blue color and  
+        # define mask 
+        blue_lower = np.array([100, 150, 0], np.uint8) 
+        blue_upper = np.array([140, 255, 255], np.uint8) 
+        blue_mask = cv2.inRange(hsvFrame, blue_lower, blue_upper) 
+
+        # For blue color 
+        blue_mask = cv2.dilate(blue_mask, kernel) 
+        res_blue = cv2.bitwise_and(frame, frame, mask = blue_mask) 
+
+        # Creating contour to track blue color 
+        blue_contours, hierarchy = cv2.findContours(blue_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE) 
+
+        for pic, contour in enumerate(blue_contours): 
+          area = cv2.contourArea(contour) 
+          if(area > 300): 
+            x, y, w, h = cv2.boundingRect(contour) 
+            if boxes is not None:
+              for box, track_id in zip(boxes, track_ids): # Fixes Issue#14 - Color detection running in unwanted sections
+                Bx, By, Bw, Bh = box
+                if abs(Bx-Bw) < x < abs(Bx+Bw) and abs(By-Bh) < y < abs(By+Bh):
+                  annotated_frame = cv2.rectangle(annotated_frame, (x, y),  (x + w, y + h), (255, 0, 0), 2)
+                  cv2.putText(annotated_frame, "Mavi", (x, y+25), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0))
 
       # Display FPS
       fps = str(int(cap.get(cv2.CAP_PROP_FPS)))

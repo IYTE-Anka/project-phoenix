@@ -75,7 +75,7 @@ def run(source_path, model_path, conf_threshold, color):
       annotated_frame = results[0].plot()
 
       # SECTION: TRAJECTORY PLOTTING
-      if results[0].boxes is not None and results[0].boxes.id is not None: # Fixes issue#13 - Video stops in the output when there is no detection 
+      if results[0].boxes is not None and results[0].boxes.id is not None: # Fixes Issue#13 - Video stops in the output when there is no detection 
         # Get the boxes and track IDs
         boxes = results[0].boxes.xywh.cpu()
         track_ids = results[0].boxes.id.int().cpu().tolist()
@@ -114,8 +114,11 @@ def run(source_path, model_path, conf_threshold, color):
           area = cv2.contourArea(contour) 
           if(area > 300): 
             x, y, w, h = cv2.boundingRect(contour) 
-            annotated_frame = cv2.rectangle(annotated_frame, (x, y),  (x + w, y + h), (0, 0, 255), 2)
-            cv2.putText(annotated_frame, "Kirmizi", (x, y+25), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255)) 
+            for box, track_id in zip(boxes, track_ids): # Fixes Issue#14 - Color detection running in unwanted sections
+              Bx, By, Bw, Bh = box
+              if abs(Bx-Bw) < x < abs(Bx+Bw) and abs(By-Bh) < y < abs(By+Bh):
+                annotated_frame = cv2.rectangle(annotated_frame, (x, y),  (x + w, y + h), (0, 0, 255), 2)
+                cv2.putText(annotated_frame, "Kirmizi", (x, y+25), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255)) 
 
         # Set range for green color and  
         # define mask 
@@ -134,8 +137,11 @@ def run(source_path, model_path, conf_threshold, color):
           area = cv2.contourArea(contour) 
           if(area > 300): 
             x, y, w, h = cv2.boundingRect(contour) 
-            annotated_frame = cv2.rectangle(annotated_frame, (x, y),  (x + w, y + h), (0, 255, 0), 2)
-            cv2.putText(annotated_frame, "Yesil", (x, y+25), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0))
+            for box, track_id in zip(boxes, track_ids): # Fixes Issue#14 - Color detection running in unwanted sections
+              Bx, By, Bw, Bh = box
+              if abs(Bx-Bw) < x < abs(Bx+Bw) and abs(By-Bh) < y < abs(By+Bh):
+                annotated_frame = cv2.rectangle(annotated_frame, (x, y),  (x + w, y + h), (0, 255, 0), 2)
+                cv2.putText(annotated_frame, "Yesil", (x, y+25), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0))
 
       # Display FPS
       fps = str(int(cap.get(cv2.CAP_PROP_FPS)))

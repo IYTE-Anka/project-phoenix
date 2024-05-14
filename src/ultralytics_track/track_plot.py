@@ -42,11 +42,12 @@ def main():
   parser.set_defaults(color=True)
 
   args = parser.parse_args()
-
-  if int(args.source) != 0:
+  source_path = ""
+  try:
+    if int(args.source) == 0:
+      source_path = 0
+  except ValueError:
     source_path = os.path.join(os.path.dirname(__file__), "testing", args.source)
-  else:
-    source_path = int(args.source)
 
   model_path = os.path.join(os.path.dirname(__file__), "models", args.model)
   conf_threshold = float(args.conf)

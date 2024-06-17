@@ -1,6 +1,6 @@
 import socket
 import struct
-from picamera2 import Picamera2
+from picamera2 import Picamera2, Preview
 import cv2
 
 # Initialize the camera
@@ -21,7 +21,6 @@ connection = connection.makefile('wb')
 try:
     while True:
         frame = picam2.capture_array()
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # Convert BGR to RGB
         _, buffer = cv2.imencode('.jpg', frame)
         data = buffer.tobytes()
         size = len(data)

@@ -10,29 +10,28 @@ import struct
 import io
 import sys
 
-try:
-  # Replace with your Raspberry Pi's IP address
-  HOST = str(input("Please enter the current Raspberry Pi 4 IP address (enter 0 if not needed): "))
-  PORT = 8000
-
-  if HOST == "0":
-    print("Raspberry Pi 4 connection not needed, proceeding with local detection...")
-    sleep(1)
-  else: 
-    # Create a socket to receive the video
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client_socket.connect((HOST, PORT))
-    connection = client_socket.makefile('rb')
-    print(f"Connection established to {HOST}")
-    sleep(1)
-
-except Exception as e:
-  print("Following error occured: ", e)
-  sleep(1)
-  sys.exit("Exiting...")
-
-
 def main():
+  try:
+    # Replace with your Raspberry Pi's IP address
+    HOST = str(input("Please enter the current Raspberry Pi 4 IP address (enter 0 if not needed): "))
+    PORT = 8000
+
+    if HOST == "0":
+      print("Raspberry Pi 4 connection not needed, proceeding with local detection...")
+      sleep(1)
+    else: 
+      # Create a socket to receive the video
+      client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+      client_socket.connect((HOST, PORT))
+      connection = client_socket.makefile('rb')
+      print(f"Connection established to {HOST}")
+      sleep(1)
+
+  except Exception as e:
+    print("Following error occured: ", e)
+    sleep(1)
+    sys.exit("Exiting...")
+
   parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
   parser.add_argument(
       '--source', 
@@ -82,7 +81,7 @@ def main():
   conf_threshold = float(args.conf)
   
   if source_path == "pi":
-    run_pi("pi", model_path, conf_threshold, args.color)
+    run_pi(model_path, conf_threshold, args.color, connection, client_socket)
   else:
     run(source_path, model_path, conf_threshold, args.color)
 
@@ -170,7 +169,7 @@ def run(source_path, model_path, conf_threshold, color):
   cap.release()
   cv2.destroyAllWindows()
 
-def run_pi(source_path, model_path, conf_threshold, color):
+def run_pi(source_path, model_path, conf_threshold, color, connection, client_socket):
   # Load the YOLOv8 model
   model = YOLO(model_path)
 

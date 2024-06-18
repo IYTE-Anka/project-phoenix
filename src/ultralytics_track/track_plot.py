@@ -74,7 +74,9 @@ def main():
     if int(args.source) == 0:
       source_path = 0
   except ValueError:
-    source_path = os.path.join(os.path.dirname(__file__), "testing", args.source) if str(args.source) != "pi" else "pi"
+    source_path = os.path.join(os.path.dirname(__file__), "testing", args.source) 
+    if str(args.source) == "pi" or HOST != "0":
+      source_path = "pi"
 
   model_path = os.path.join(os.path.dirname(__file__), "models", args.model)
   conf_threshold = float(args.conf)

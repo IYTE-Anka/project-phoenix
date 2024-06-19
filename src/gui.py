@@ -37,7 +37,7 @@ def video_stream():
       # Decode the image from the stream
       image = np.asarray(bytearray(image_stream.read()), dtype="uint8")
       image = cv2.imdecode(image, cv2.IMREAD_COLOR)
-      image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # Convert BGR to RGB
+      # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) DEPRECATED: BGR to RGB conversion is not needed anymore
       
       
       # SECTION: OBJECT DETECTION

@@ -1,88 +1,113 @@
 from PIL import Image, ImageTk
-from time import sleep
 from ultralytics import YOLO
 from collections import defaultdict
-import cv2
 import tkinter as tk
+import cv2
 import socket
+import numpy as np
 import struct
 import io
-import sys
+import threading
 import os
 
-class VideoCapture:
-  def __init__(self, video_source=0):
-    self.vid = cv2.VideoCapture(video_source)
-    if not self.vid.isOpened():
-      raise ValueError("Unable to open video source", video_source)
+# Replace with your Raspberry Pi's IP address
+HOST = '192.168.1.22'
+PORT = 8000
 
-  def get_frame(self):
-    if self.vid.isOpened():
-      ret, frame = self.vid.read()
-      if ret:
-        return (ret, cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-      else:
-        return (ret, None)
-    else:
-      return (ret, None)
+# Create a socket to receive the video
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+client_socket.connect((HOST, PORT))
+connection = client_socket.makefile('rb')
 
-  def __del__(self):
-    if self.vid.isOpened():
-      self.vid.release()
-
-class App:
-  def __init__(self, window, window_title, video_source=0, get_frame_func=None):
-    self.window = window
-    self.window.title(window_title)
-    self.video_source = video_source
-    self.get_frame_func = get_frame_func
-    self.vid = VideoCapture(self.video_source)
-    self.canvas = tk.Canvas(window, width = self.vid.vid.get(cv2.CAP_PROP_FRAME_WIDTH), height = self.vid.vid.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    self.canvas.pack()
-    self.delay = 15
-    self.update()
-    self.window.mainloop()
-
-  def update(self):
-    if self.get_frame_func:
-      frame = self.get_frame_func()
-    else:
-      ret, frame = self.vid.get_frame()
-      if not ret:
-        return
-    self.photo = ImageTk.PhotoImage(image = Image.fromarray(frame))
-    self.canvas.create_image(0, 0, image = self.photo, anchor = tk.NW)
-    self.window.after(self.delay, self.update)
-
-def run():
-  # Load the YOLOv8 model
+def video_stream():
   model_path = os.path.join(os.path.dirname(__file__), "ultralytics_track", "models", "anka_v1.2.pt")
   model = YOLO(model_path)
 
-  # Store the track history
   track_history = defaultdict(lambda: [])
-
-def main():
   try:
-    # Replace with your Raspberry Pi's IP address
-    HOST = str(input("Please enter the current Raspberry Pi 4 IP address (enter 0 if not needed): "))
-    PORT = 8000
+    while True:
+      # Read the length of the image as a 32-bit unsigned int. If the length is zero, break
+      image_len = struct.unpack('<L', connection.read(struct.calcsize('<L')))[0]
+      if not image_len:
+        break
+      # Construct a stream to hold the image data and read the image data from the connection
+      image_stream = io.BytesIO()
+      image_stream.write(connection.read(image_len))
+      image_stream.seek(0)
+      # Decode the image from the stream
+      image = np.asarray(bytearray(image_stream.read()), dtype="uint8")
+      image = cv2.imdecode(image, cv2.IMREAD_COLOR)
+      image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # Convert BGR to RGB
+      
+      
+      # SECTION: OBJECT DETECTION
+      # Run YOLOv8 tracking on the frame, persisting tracks between frames
+      results = model.track(image, persist=True, tracker="bytetrack.yaml", conf=0.3, device=0)
 
-    if HOST == "0":
-      print("Raspberry Pi 4 connection not needed, proceeding with local detection...")
-      sleep(1)
-    else: 
-      # Create a socket to receive the video
-      client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-      client_socket.connect((HOST, PORT))
-      connection = client_socket.makefile('rb')
-      print(f"Connection established to {HOST}")
-      sleep(1)
-  except Exception as e:
-    print("Following error occured: ", e)
-    sleep(1)
-    sys.exit("Exiting...")
-  App(tk.Tk(), "ANKA Balon Tespit Sistemi", 0, run)
+      # Visualize the results on the frame
+      annotated_frame = results[0].plot()
+      boxes = None
+      # SECTION: TRAJECTORY PLOTTING
+      if results[0].boxes is not None and results[0].boxes.id is not None: # Fixes Issue#13 - Video stops in the output when there is no detection 
+        # Get the boxes and track IDs
+        boxes = results[0].boxes.xywh.cpu()
+        track_ids = results[0].boxes.id.int().cpu().tolist()
 
-if __name__ == "__main__":
-  main()
+        # Plot the tracks
+        for box, track_id in zip(boxes, track_ids):
+          x, y, w, h = box
+          track = track_history[track_id]
+          track.append((float(x), float(y)))  # x, y center point
+          if len(track) > 30:  # retain 90 tracks for 90 frames
+            track.pop(0)
+
+          # Draw the tracking lines
+          points = np.hstack(track).astype(np.int32).reshape((-1, 1, 2))
+          cv2.polylines(annotated_frame, [points], isClosed=False, color=(230, 230, 230), thickness=10)
+          cv2.circle(annotated_frame, (int(x), int(y)), 5, (0, 0, 0), -1) # Put circle on the center of the balloons bboxes
+
+      # SECTION: COLOR TRACKING
+      # Define the color ranges for red, green, and blue in HSV color space
+      color_ranges = {
+        "Kirmizi": [(136, 87, 111), (180, 255, 255)],
+        "Yesil": [(25, 52, 72), (102, 255, 25)],
+        "Mavi": [(94, 80, 2), (120, 255, 25)]
+      }
+
+      # Convert the frame to HSV color space
+      hsv_frame = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+      if boxes is not None:
+        for box, track_id in zip(boxes, track_ids):
+          x, y, w, h = box
+          # Extract the ROI from the HSV frame
+          roi = hsv_frame[int(y):int(y+h), int(x):int(x+w)]
+          for color_, (lower, upper) in color_ranges.items():
+            # Create a mask for the current color
+            mask = cv2.inRange(roi, lower, upper)
+            # If the color is found in the ROI, annotate it on the frame
+            if cv2.countNonZero(mask) > 0:
+              cv2.putText(annotated_frame, color_, (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
+              break
+
+      # Display FPS
+      fps = "30" #FIXME: Temporary value
+      cv2.putText(annotated_frame, fps, (0, 25), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 3, cv2.LINE_AA)
+      
+      # Convert the Image object into a TkPhoto object
+      im = Image.fromarray(annotated_frame)
+      img = ImageTk.PhotoImage(image=im)
+      # Update the image_label with a new image
+      image_label.config(image=img)
+      image_label.image = img
+  finally:
+    connection.close()
+    client_socket.close()
+
+root = tk.Tk()
+image_label = tk.Label(root)  # create a label to hold the video feed
+image_label.pack()  # place the label in the window
+
+thread = threading.Thread(target=video_stream)
+thread.start()
+
+root.mainloop()

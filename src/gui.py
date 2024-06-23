@@ -9,6 +9,7 @@ import struct
 import io
 import threading
 import os
+import sys
 
 # Replace with your Raspberry Pi's IP address
 HOST = '192.168.1.22'
@@ -38,7 +39,6 @@ def video_stream():
       image = np.asarray(bytearray(image_stream.read()), dtype="uint8")
       image = cv2.imdecode(image, cv2.IMREAD_COLOR)
       # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) DEPRECATED: BGR to RGB conversion is not needed anymore
-      
       
       # SECTION: OBJECT DETECTION
       # Run YOLOv8 tracking on the frame, persisting tracks between frames
@@ -103,9 +103,20 @@ def video_stream():
     connection.close()
     client_socket.close()
 
+def on_key_press(event):
+    if event.char == 'q':  # Check if 'q' was pressed
+        try:
+            connection.close()
+            client_socket.close()
+            root.destroy()
+        finally:
+            sys.exit(0)
+
 root = tk.Tk()
-image_label = tk.Label(root)  # create a label to hold the video feed
-image_label.pack()  # place the label in the window
+root.bind('<KeyPress>', on_key_press)  # Bind the key press event to the on_key_press function
+root.title("İYTE ANKA - Balon Tespit ve İmha")
+image_label = tk.Label(root)  
+image_label.pack()  
 
 thread = threading.Thread(target=video_stream)
 thread.start()

@@ -12,8 +12,14 @@ import os
 import sys
 
 # Replace with your Raspberry Pi's IP address
-HOST = '192.168.1.22'
+HOST = '192.168.1.24'
 PORT = 8000
+
+current_mode = "Mode 1"
+def update_mode(new_mode):
+    global current_mode
+    current_mode = new_mode
+    print(f"Mode changed to: {current_mode}")
 
 # Create a socket to receive the video
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -21,6 +27,8 @@ client_socket.connect((HOST, PORT))
 connection = client_socket.makefile('rb')
 
 def video_stream():
+  global current_mode
+  
   model_path = os.path.join(os.path.dirname(__file__), "ultralytics_track", "models", "anka_v1.2.pt")
   model = YOLO(model_path)
 
@@ -92,7 +100,7 @@ def video_stream():
       # Display FPS
       fps = "30" #FIXME: Temporary value
       cv2.putText(annotated_frame, fps, (0, 25), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 3, cv2.LINE_AA)
-      
+      cv2.putText(annotated_frame, current_mode, (annotated_frame.shape[1] - 200, 25), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 3, cv2.LINE_AA)
       # Convert the Image object into a TkPhoto object
       im = Image.fromarray(annotated_frame)
       img = ImageTk.PhotoImage(image=im)
@@ -109,12 +117,28 @@ def on_key_press(event):
             connection.close()
             client_socket.close()
             root.destroy()
-        finally:
             sys.exit(0)
+        except Exception as e:
+            print(e)
 
 root = tk.Tk()
 root.bind('<KeyPress>', on_key_press)  # Bind the key press event to the on_key_press function
 root.title("İYTE ANKA - Balon Tespit ve İmha")
+
+# Mode selection frame
+mode_frame = tk.Frame(root)
+mode_frame.pack(side=tk.TOP, fill=tk.X)
+
+# Mode buttons
+mode1_button = tk.Button(mode_frame, text="Mode 1", command=lambda: update_mode("Mode 1"))
+mode1_button.pack(side=tk.LEFT)
+
+mode2_button = tk.Button(mode_frame, text="Mode 2", command=lambda: update_mode("Mode 2"))
+mode2_button.pack(side=tk.LEFT)
+
+mode3_button = tk.Button(mode_frame, text="Mode 3", command=lambda: update_mode("Mode 3"))
+mode3_button.pack(side=tk.LEFT)
+
 image_label = tk.Label(root)  
 image_label.pack()  
 

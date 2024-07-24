@@ -12,10 +12,10 @@ import os
 import sys
 
 # Replace with your Raspberry Pi's IP address
-HOST = '192.168.1.24'
+HOST = '10.8.54.35'
 PORT = 8000
 
-current_mode = "Mod 1"
+current_mode = "Mod 2"
 def update_mode(new_mode):
     global current_mode
     current_mode = new_mode
@@ -25,6 +25,16 @@ def update_mode(new_mode):
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client_socket.connect((HOST, PORT))
 connection = client_socket.makefile('rb')
+
+def send_data(data):
+    try:
+        data_bytes = data.encode('utf-8')
+        size = len(data_bytes)
+        client_socket.sendall(struct.pack('<L', size) + data_bytes)
+        print(f"Sent data: {data}")
+    except Exception as e:
+        print(f"Error sending data: {e}")
+
 
 def video_stream():
   global current_mode
@@ -56,6 +66,8 @@ def video_stream():
         # Visualize the results on the frame
         annotated_frame = results[0].plot()
         boxes = None
+
+        send_data("Test data") #FIXME: Temporary data
         # SECTION: TRAJECTORY PLOTTING
         if results[0].boxes is not None and results[0].boxes.id is not None: # Fixes Issue#13 - Video stops in the output when there is no detection 
           # Get the boxes and track IDs

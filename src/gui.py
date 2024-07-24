@@ -10,6 +10,7 @@ import io
 import threading
 import os
 import sys
+import json
 
 # Replace with your Raspberry Pi's IP address
 HOST = '10.8.54.35'
@@ -58,7 +59,7 @@ def video_stream():
       image = cv2.imdecode(image, cv2.IMREAD_COLOR)
       # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) DEPRECATED: BGR to RGB conversion is not needed anymore
       
-      if current_mode != "Mod 1":
+      if current_mode in ["Mod 2", "Mod 3"]:
         # SECTION: OBJECT DETECTION
         # Run YOLOv8 tracking on the frame, persisting tracks between frames
         results = model.track(image, persist=True, tracker="bytetrack.yaml", conf=0.3, device=0)
@@ -66,17 +67,26 @@ def video_stream():
         # Visualize the results on the frame
         annotated_frame = results[0].plot()
         boxes = None
-
-        send_data("Test data") #FIXME: Temporary data
+        
         # SECTION: TRAJECTORY PLOTTING
         if results[0].boxes is not None and results[0].boxes.id is not None: # Fixes Issue#13 - Video stops in the output when there is no detection 
           # Get the boxes and track IDs
           boxes = results[0].boxes.xywh.cpu()
           track_ids = results[0].boxes.id.int().cpu().tolist()
-
+          objects = []
+            
           # Plot the tracks
           for box, track_id in zip(boxes, track_ids):
             x, y, w, h = box
+            object_data = {
+              'track_id': track_id,
+              'x': int(x),
+              'y': int(y),
+              'w': int(w),
+              'h': int(h)
+            }
+            objects.append(object_data)
+
             track = track_history[track_id]
             track.append((float(x), float(y)))  # x, y center point
             if len(track) > 30:  # retain 90 tracks for 90 frames
@@ -86,6 +96,9 @@ def video_stream():
             points = np.hstack(track).astype(np.int32).reshape((-1, 1, 2))
             cv2.polylines(annotated_frame, [points], isClosed=False, color=(230, 230, 230), thickness=10)
             cv2.circle(annotated_frame, (int(x), int(y)), 5, (0, 0, 0), -1) # Put circle on the center of the balloons bboxes
+          
+          json_data = json.dumps(objects)
+          send_data(json_data)
 
         if current_mode == "Mod 3":
           # SECTION: COLOR TRACKING
@@ -122,7 +135,7 @@ def video_stream():
         image_label.config(image=img)
         image_label.image = img
         
-      else:
+      elif current_mode == "Mod 1":
         fps = "30" #FIXME: Temporary value
         cv2.putText(image, fps, (0, 25), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 3, cv2.LINE_AA)
         cv2.putText(image, current_mode, (image.shape[1] - 100, 25), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 3, cv2.LINE_AA)
@@ -132,6 +145,7 @@ def video_stream():
         # Update the image_label with a new image
         image_label.config(image=img)
         image_label.image = img
+        send_data("WARNING: Object detection deactivated.")
   finally:
     connection.close()
     client_socket.close()

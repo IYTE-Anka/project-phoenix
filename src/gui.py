@@ -16,7 +16,7 @@ import json
 HOST = '10.8.54.35'
 PORT = 8000
 
-current_mode = "Mod 2"
+current_mode = "Mod 1"
 def update_mode(new_mode):
     global current_mode
     current_mode = new_mode
@@ -125,7 +125,7 @@ def video_stream():
                       break
 
         json_data = json.dumps(objects)
-        send_data(json_data)
+        send_data(json_data) if objects else send_data("WARNING: No objects detected.")
 
         # Display FPS
         fps = "30" #FIXME: Temporary value

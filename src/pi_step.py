@@ -1,38 +1,36 @@
 from time import sleep
 import RPi.GPIO as gpio
 
-DIR = 20
-STEP = 21
-CW =1
-CCW =0
+direction_pin_y   = 23
+pulse_pin_y       = 24
+
+cw_direction    = 0 
+ccw_direction   = 1 
 
 gpio.setmode(gpio.BCM)
-gpio.setup(DIR, gpio.OUT)
-gpio.setup(STEP, gpio.OUT)
-gpio.output(DIR,CW)
+gpio.setup(direction_pin_y, gpio.OUT)
+gpio.setup(pulse_pin_y, gpio.OUT)
+gpio.output(direction_pin_y,cw_direction)
 
-
-# Main body of code
 try:
     while True:
-        sleep(1)
-        gpio.output(DIR,CW)
-        for x in range(400):
-            gpio.output(STEP,gpio.HIGH)
-            sleep(.0100)
-            gpio.output(STEP,gpio.LOW)
-            sleep(.0100)
-        
-        sleep(1)
-        gpio.output(DIR,CCW)
-        for x in range(400):
-            gpio.output(STEP,gpio.HIGH)
-            sleep(.0010)
-            gpio.output(STEP,gpio.LOW)
-            sleep(.0010)
-            
-        
-        
-except KeyboardInterrupt: # If there is a KeyboardInterrupt (when you press ctrl+c), exit the program and cleanup
-    print("Cleaning up!")
+        print('Direction CW')
+        sleep(.5)
+        gpio.output(direction_pin_y,cw_direction)
+        for x in range(5000):
+            gpio.output(pulse_pin_y,gpio.HIGH)
+            sleep(.001)
+            gpio.output(pulse_pin_y,gpio.LOW)
+            sleep(.0005)
+
+        print('Direction CCW')
+        sleep(.5)
+        gpio.output(direction_pin_y,ccw_direction)
+        for x in range(5000):
+            gpio.output(pulse_pin_y,gpio.HIGH)
+            sleep(.001)
+            gpio.output(pulse_pin_y,gpio.LOW)
+            sleep(.0005)
+
+except KeyboardInterrupt:
     gpio.cleanup()

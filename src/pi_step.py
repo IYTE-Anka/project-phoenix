@@ -19,29 +19,43 @@ gpio.output(direction_pin_x,cw_direction)
 
 try:
     while True:
-        print('Direction CW')
-        sleep(.5)
-        gpio.output(direction_pin_y,cw_direction)
-        gpio.output(direction_pin_x,cw_direction)
-        for x in range(5000):
-            gpio.output(pulse_pin_y,gpio.HIGH)
-            gpio.output(pulse_pin_x,gpio.HIGH)
-            sleep(.001)
-            gpio.output(pulse_pin_y,gpio.LOW)
-            gpio.output(pulse_pin_x,gpio.LOW)
-            sleep(.0005)
+        choice = input("Direction: ")
+        if choice == "CW":
+            sleep(.5)
+            ax = input("Axis: ")
+            if ax == "X":
+                gpio.output(direction_pin_x,cw_direction)
+                for x in range(50):
+                    gpio.output(pulse_pin_x,gpio.HIGH)
+                    sleep(.001)
+                    gpio.output(pulse_pin_x,gpio.LOW)
+                    sleep(.0005)
+            elif ax == "Y":
+                gpio.output(direction_pin_y,cw_direction)
+                for x in range(50):
+                    gpio.output(pulse_pin_y,gpio.HIGH)
+                    sleep(.001)
+                    gpio.output(pulse_pin_y,gpio.LOW)
+                    sleep(.0005)
 
-        print('Direction CCW')
-        sleep(.5)
-        gpio.output(direction_pin_y,ccw_direction)
-        gpio.output(direction_pin_x,ccw_direction)
-        for x in range(5000):
-            gpio.output(pulse_pin_y,gpio.HIGH)
-            gpio.output(pulse_pin_x,gpio.HIGH)
-            sleep(.001)
-            gpio.output(pulse_pin_y,gpio.LOW)
-            gpio.output(pulse_pin_x,gpio.LOW)
-            sleep(.0005)
+        elif choice == "CCW":
+            sleep(.5)
+            ax = input("Axis: ")
+            if ax == "X":
+                gpio.output(direction_pin_x,ccw_direction)
+                for x in range(50):
+                    gpio.output(pulse_pin_x,gpio.HIGH)
+                    sleep(.001)
+                    gpio.output(pulse_pin_x,gpio.LOW)
+                    sleep(.0005)
+            elif ax == "Y":
+                gpio.output(direction_pin_y,ccw_direction)
+                for x in range(50):
+                    gpio.output(pulse_pin_y,gpio.HIGH)
+                    sleep(.001)
+                    gpio.output(pulse_pin_y,gpio.LOW)
+                    sleep(.0005)
+                
 
 except KeyboardInterrupt:
     gpio.cleanup()

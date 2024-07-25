@@ -18,13 +18,13 @@ cw_direction    = 0
 ccw_direction   = 1 
 
 # Define parameters
-total_steps = 200  # Total number of steps
-ramp_steps = 50    # Number of steps for ramp-up and ramp-down
+total_steps = 100  # Total number of steps
+ramp_steps = 25    # Number of steps for ramp-up and ramp-down
 constant_speed_steps = total_steps - 2 * ramp_steps  # Steps at constant speed
 
 # Define delay parameters
 initial_delay = 0.01  # Initial delay for ramp-up
-final_delay = 0.0005  # Final delay for ramp-down
+final_delay = 0.01 # Final delay for ramp-down
 constant_delay = 0.001  # Delay during constant speed
 
 

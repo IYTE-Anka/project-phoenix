@@ -69,6 +69,8 @@ try:
         connection_file.write(struct.pack('<L', size))
         connection_file.write(data)
 
+        incoming_data = ""
+
         if not data_queue.empty():
             incoming_data = data_queue.get()
             print(f"INCOMING DATA: {incoming_data}")

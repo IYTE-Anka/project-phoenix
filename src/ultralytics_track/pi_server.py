@@ -62,7 +62,7 @@ def handle_incoming_data(conn, data_queue):
 
 data_queue = queue.Queue()
 
-incoming_thread = threading.Thread(target=handle_incoming_data, args=(connection,))
+incoming_thread = threading.Thread(target=handle_incoming_data, args=(connection, data_queue))
 incoming_thread.start()
 
 try:

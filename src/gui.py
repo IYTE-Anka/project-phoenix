@@ -183,13 +183,16 @@ mode_frame.pack(side=tk.TOP, fill=tk.X)
 
 # Mode buttons
 mode1_button = tk.Button(mode_frame, text="Mod 1", command=lambda: update_mode("Mod 1"))
-mode1_button.pack(side=tk.LEFT, padx=5)
+mode1_button.pack(side=tk.LEFT, padx=5, pady=5)
 
 mode2_button = tk.Button(mode_frame, text="Mod 2", command=lambda: update_mode("Mod 2"))
-mode2_button.pack(side=tk.LEFT, padx=5)
+mode2_button.pack(side=tk.LEFT, padx=5, pady=5)
 
 mode3_button = tk.Button(mode_frame, text="Mod 3", command=lambda: update_mode("Mod 3"))
-mode3_button.pack(side=tk.LEFT, padx=5)
+mode3_button.pack(side=tk.LEFT, padx=5, pady=5)
+
+fire_button = tk.Button(mode_frame, text="Ateşle", command=lambda: send_data("Ates"))
+fire_button.pack(side=tk.RIGHT, padx=5, pady=5)
 
 # Motor control frame
 control_frame = tk.Frame(root)

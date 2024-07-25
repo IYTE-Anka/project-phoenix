@@ -40,21 +40,15 @@ connection_file = connection.makefile('wb')
 def handle_incoming_data(conn, data_queue):
     while True:
         try:
-            print("Waiting for data size...")
             data_size_bytes = conn.recv(4)
             if len(data_size_bytes) < 4:
                 continue
-            
+    
             data_size = struct.unpack('<L', data_size_bytes)[0]
-            print("Size received.")
-
             if data_size == 0:
                 continue
-            
-            print("Waiting for data...")
+        
             data = conn.recv(data_size)
-            print("Data received.")
-
             data_queue.put(data.decode('utf-8'))
         except Exception as e:
             print(f"Error receiving data: {e}")
@@ -76,7 +70,7 @@ try:
 
         if not data_queue.empty():
             incoming_data = data_queue.get()
-            print(f"Processing data: {incoming_data}")
+            print(f"INCOMING DATA: {incoming_data}")
 finally:
     connection.close()
     server_socket.close()

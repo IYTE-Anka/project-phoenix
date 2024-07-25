@@ -148,7 +148,6 @@ def video_stream():
         # Update the image_label with a new image
         image_label.config(image=img)
         image_label.image = img
-        send_data("WARNING: Object detection deactivated.")
   finally:
     connection.close()
     client_socket.close()
@@ -162,6 +161,18 @@ def on_key_press(event):
         except Exception as e:
             print(e)
 
+def move_up():
+    print("Move Up")
+
+def move_down():
+    print("Move Down")
+
+def move_left():
+    print("Move Left")
+
+def move_right():
+    print("Move Right")
+
 root = tk.Tk()
 root.bind('<KeyPress>', on_key_press)  # Bind the key press event to the on_key_press function
 root.title("İYTE ANKA - Balon Tespit ve İmha")
@@ -172,13 +183,30 @@ mode_frame.pack(side=tk.TOP, fill=tk.X)
 
 # Mode buttons
 mode1_button = tk.Button(mode_frame, text="Mod 1", command=lambda: update_mode("Mod 1"))
-mode1_button.pack(side=tk.LEFT)
+mode1_button.pack(side=tk.LEFT, padx=5)
 
 mode2_button = tk.Button(mode_frame, text="Mod 2", command=lambda: update_mode("Mod 2"))
-mode2_button.pack(side=tk.LEFT)
+mode2_button.pack(side=tk.LEFT, padx=5)
 
 mode3_button = tk.Button(mode_frame, text="Mod 3", command=lambda: update_mode("Mod 3"))
-mode3_button.pack(side=tk.LEFT)
+mode3_button.pack(side=tk.LEFT, padx=5)
+
+# Motor control frame
+control_frame = tk.Frame(root)
+control_frame.pack(side=tk.TOP, fill=tk.X)
+
+# Control buttons
+up_button = tk.Button(control_frame, text="Yukarı", command=move_up)
+up_button.pack(side=tk.TOP, padx=5, pady=5)
+
+down_button = tk.Button(control_frame, text="Aşağı", command=move_down)
+down_button.pack(side=tk.BOTTOM, padx=5, pady=5)
+
+left_button = tk.Button(control_frame, text="Sol", command=move_left)
+left_button.pack(side=tk.LEFT, padx=200, pady=5)
+
+right_button = tk.Button(control_frame, text="Sağ", command=move_right)
+right_button.pack(side=tk.RIGHT, padx=200, pady=5)
 
 image_label = tk.Label(root)  
 image_label.pack()  

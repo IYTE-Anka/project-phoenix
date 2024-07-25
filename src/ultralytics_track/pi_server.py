@@ -19,15 +19,15 @@ pulse_pin_gun = 6
 cw_direction    = 0 
 ccw_direction   = 1 
 
-# Define parameters
-total_steps = 50  # Total number of steps
-ramp_steps = 15    # Number of steps for ramp-up and ramp-down
-constant_speed_steps = total_steps - 2 * ramp_steps  # Steps at constant speed
+# # Define parameters
+# total_steps = 50  # Total number of steps
+# ramp_steps = 15    # Number of steps for ramp-up and ramp-down
+# constant_speed_steps = total_steps - 2 * ramp_steps  # Steps at constant speed
 
-# Define delay parameters
-initial_delay = 0.05/4  # Initial delay for ramp-up
-final_delay = 0.05/4  # Final delay for ramp-down
-constant_delay = 0.05/4  # Delay during constant speed
+# # Define delay parameters
+# initial_delay = 0.05/4  # Initial delay for ramp-up
+# final_delay = 0.05/4  # Final delay for ramp-down
+# constant_delay = 0.05/4  # Delay during constant speed
 
 
 gpio.setmode(gpio.BCM)
@@ -105,15 +105,15 @@ try:
 
         # SECTION: MOTOR CONTROL
         if incoming_data == "MLeft":
-            control_motor(direction_pin_x, pulse_pin_x, cw_direction)
+            control_motor(direction_pin_x, pulse_pin_x, cw_direction, 50, 0.05/4)
         elif incoming_data == "MRight":
-            control_motor(direction_pin_x, pulse_pin_x, ccw_direction)
+            control_motor(direction_pin_x, pulse_pin_x, ccw_direction, 50, 0.05/4)
         elif incoming_data == "MUp":
-            control_motor(direction_pin_y, pulse_pin_y, cw_direction)
+            control_motor(direction_pin_y, pulse_pin_y, cw_direction, 50, 0.05/4)
         elif incoming_data == "MDown":
-            control_motor(direction_pin_y, pulse_pin_y, ccw_direction)
+            control_motor(direction_pin_y, pulse_pin_y, ccw_direction, 50, 0.05/4)
         elif incoming_data == "Ates":
-            control_motor(direction_pin_gun, pulse_pin_gun, cw_direction)
+            control_motor(direction_pin_gun, pulse_pin_gun, cw_direction, 200, 0.05/15)
 finally:
     connection.close()
     server_socket.close()

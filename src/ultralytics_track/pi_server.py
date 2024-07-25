@@ -1,9 +1,9 @@
 import socket
 import struct
-from picamera2 import Picamera2, Preview
+from picamera2 import Picamera2, Preview # type: ignore
 import cv2
 import threading
-import RPi.GPIO as gpio
+import RPi.GPIO as gpio # type: ignore
 import queue
 from time import sleep
 

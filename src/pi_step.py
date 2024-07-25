@@ -1,5 +1,5 @@
 from time import sleep
-import RPi.GPIO as gpio
+import RPi.GPIO as gpio # type: ignore
 
 direction_pin_y   = 23
 pulse_pin_y       = 24

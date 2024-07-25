@@ -5,6 +5,7 @@ import cv2
 import threading
 import RPi.GPIO as gpio
 import queue
+from time import sleep
 
 direction_pin_y   = 23
 pulse_pin_y       = 24
@@ -71,6 +72,36 @@ try:
         if not data_queue.empty():
             incoming_data = data_queue.get()
             print(f"INCOMING DATA: {incoming_data}")
+        
+        # SECTION: MOTOR CONTROL
+        if incoming_data == "MLeft":
+            gpio.output(direction_pin_x,cw_direction)
+            for x in range(50):
+                gpio.output(pulse_pin_x,gpio.HIGH)
+                sleep(.001)
+                gpio.output(pulse_pin_x,gpio.LOW)
+                sleep(.0005)
+        elif incoming_data == "MRight":
+            gpio.output(direction_pin_x,ccw_direction)
+            for x in range(50):
+                gpio.output(pulse_pin_x,gpio.HIGH)
+                sleep(.001)
+                gpio.output(pulse_pin_x,gpio.LOW)
+                sleep(.0005)
+        elif incoming_data == "MUp":
+            gpio.output(direction_pin_y,cw_direction)
+            for x in range(50):
+                gpio.output(pulse_pin_y,gpio.HIGH)
+                sleep(.001)
+                gpio.output(pulse_pin_y,gpio.LOW)
+                sleep(.0005)
+        elif incoming_data == "MDown":
+            gpio.output(direction_pin_y,ccw_direction)
+            for x in range(50):
+                gpio.output(pulse_pin_y,gpio.HIGH)
+                sleep(.001)
+                gpio.output(pulse_pin_y,gpio.LOW)
+                sleep(.0005)
 finally:
     connection.close()
     server_socket.close()

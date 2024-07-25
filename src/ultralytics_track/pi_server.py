@@ -23,9 +23,9 @@ ramp_steps = 15    # Number of steps for ramp-up and ramp-down
 constant_speed_steps = total_steps - 2 * ramp_steps  # Steps at constant speed
 
 # Define delay parameters
-initial_delay = 0.05  # Initial delay for ramp-up
-final_delay = 0.05  # Final delay for ramp-down
-constant_delay = 0.05  # Delay during constant speed
+initial_delay = 0.05/4  # Initial delay for ramp-up
+final_delay = 0.05/4  # Final delay for ramp-down
+constant_delay = 0.05/4  # Delay during constant speed
 
 
 gpio.setmode(gpio.BCM)

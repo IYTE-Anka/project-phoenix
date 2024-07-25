@@ -3,6 +3,24 @@ import struct
 from picamera2 import Picamera2, Preview
 import cv2
 import threading
+import RPi.GPIO as gpio
+import queue
+
+direction_pin_y   = 23
+pulse_pin_y       = 24
+direction_pin_x  = 17
+pulse_pin_x      = 27
+
+cw_direction    = 0 
+ccw_direction   = 1 
+
+gpio.setmode(gpio.BCM)
+gpio.setup(direction_pin_y, gpio.OUT)
+gpio.setup(pulse_pin_y, gpio.OUT)
+gpio.setup(direction_pin_x, gpio.OUT)
+gpio.setup(pulse_pin_x, gpio.OUT)
+gpio.output(direction_pin_y,cw_direction)
+gpio.output(direction_pin_x,cw_direction)
 
 # Initialize the camera
 picam2 = Picamera2()
@@ -19,7 +37,7 @@ server_socket.listen(0)
 connection, client_address = server_socket.accept()
 connection_file = connection.makefile('wb')
 
-def handle_incoming_data(conn):
+def handle_incoming_data(conn, data_queue):
     while True:
         try:
             print("Waiting for data size...")
@@ -36,9 +54,13 @@ def handle_incoming_data(conn):
             print("Waiting for data...")
             data = conn.recv(data_size)
             print("\nData received:", data.decode('utf-8'), end="\n\n")
+
+            data_queue.put(data.decode('utf-8'))
         except Exception as e:
             print(f"Error receiving data: {e}")
             break
+
+data_queue = queue.Queue()
 
 incoming_thread = threading.Thread(target=handle_incoming_data, args=(connection,))
 incoming_thread.start()
@@ -51,6 +73,10 @@ try:
         size = len(data)
         connection_file.write(struct.pack('<L', size))
         connection_file.write(data)
+
+        if not data_queue.empty():
+            incoming_data = data_queue.get()
+            print(f"Processing data: {incoming_data}")
 finally:
     connection.close()
     server_socket.close()

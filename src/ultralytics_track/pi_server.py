@@ -12,6 +12,8 @@ direction_pin_y   = 23
 pulse_pin_y       = 24
 direction_pin_x  = 17
 pulse_pin_x      = 27
+direction_pin_gun = 5
+pulse_pin_gun = 6
 
 # Define directions
 cw_direction    = 0 
@@ -33,8 +35,11 @@ gpio.setup(direction_pin_y, gpio.OUT)
 gpio.setup(pulse_pin_y, gpio.OUT)
 gpio.setup(direction_pin_x, gpio.OUT)
 gpio.setup(pulse_pin_x, gpio.OUT)
+gpio.setup(direction_pin_gun, gpio.OUT)
+gpio.setup(pulse_pin_gun, gpio.OUT)
 gpio.output(direction_pin_y,cw_direction)
 gpio.output(direction_pin_x,cw_direction)
+gpio.output(direction_pin_gun,cw_direction)
 
 # Initialize the camera
 picam2 = Picamera2()
@@ -89,31 +94,14 @@ try:
             print(f"INCOMING DATA: {incoming_data}")
         
         # Function to control motor with ramp-up, constant speed, and ramp-down
-        def control_motor(direction_pin, pulse_pin, direction):
+        def control_motor(direction_pin, pulse_pin, direction, steps, speed):
             gpio.output(direction_pin, direction)
             
-            # Ramp-up phase
-            for step in range(ramp_steps):
-                delay = initial_delay - (initial_delay - constant_delay) * (step / ramp_steps)
+            for _ in range(steps):
                 gpio.output(pulse_pin, gpio.HIGH)
-                sleep(delay)
+                sleep(speed)
                 gpio.output(pulse_pin, gpio.LOW)
-                sleep(delay)
-            
-            # Constant speed phase
-            for step in range(constant_speed_steps):
-                gpio.output(pulse_pin, gpio.HIGH)
-                sleep(constant_delay)
-                gpio.output(pulse_pin, gpio.LOW)
-                sleep(constant_delay)
-            
-            # Ramp-down phase
-            for step in range(ramp_steps):
-                delay = constant_delay + (final_delay - constant_delay) * (step / ramp_steps)
-                gpio.output(pulse_pin, gpio.HIGH)
-                sleep(delay)
-                gpio.output(pulse_pin, gpio.LOW)
-                sleep(delay)
+                sleep(speed)
 
         # SECTION: MOTOR CONTROL
         if incoming_data == "MLeft":
@@ -124,6 +112,8 @@ try:
             control_motor(direction_pin_y, pulse_pin_y, cw_direction)
         elif incoming_data == "MDown":
             control_motor(direction_pin_y, pulse_pin_y, ccw_direction)
+        elif incoming_data == "Ates":
+            control_motor(direction_pin_gun, pulse_pin_gun, cw_direction)
 finally:
     connection.close()
     server_socket.close()

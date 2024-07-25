@@ -7,13 +7,26 @@ import RPi.GPIO as gpio # type: ignore
 import queue
 from time import sleep
 
+# Define GPIO pins
 direction_pin_y   = 23
 pulse_pin_y       = 24
 direction_pin_x  = 17
 pulse_pin_x      = 27
 
+# Define directions
 cw_direction    = 0 
 ccw_direction   = 1 
+
+# Define parameters
+total_steps = 200  # Total number of steps
+ramp_steps = 50    # Number of steps for ramp-up and ramp-down
+constant_speed_steps = total_steps - 2 * ramp_steps  # Steps at constant speed
+
+# Define delay parameters
+initial_delay = 0.01  # Initial delay for ramp-up
+final_delay = 0.0005  # Final delay for ramp-down
+constant_delay = 0.001  # Delay during constant speed
+
 
 gpio.setmode(gpio.BCM)
 gpio.setup(direction_pin_y, gpio.OUT)
@@ -75,35 +88,42 @@ try:
             incoming_data = data_queue.get()
             print(f"INCOMING DATA: {incoming_data}")
         
+        # Function to control motor with ramp-up, constant speed, and ramp-down
+        def control_motor(direction_pin, pulse_pin, direction):
+            gpio.output(direction_pin, direction)
+            
+            # Ramp-up phase
+            for step in range(ramp_steps):
+                delay = initial_delay - (initial_delay - constant_delay) * (step / ramp_steps)
+                gpio.output(pulse_pin, gpio.HIGH)
+                sleep(delay)
+                gpio.output(pulse_pin, gpio.LOW)
+                sleep(delay)
+            
+            # Constant speed phase
+            for step in range(constant_speed_steps):
+                gpio.output(pulse_pin, gpio.HIGH)
+                sleep(constant_delay)
+                gpio.output(pulse_pin, gpio.LOW)
+                sleep(constant_delay)
+            
+            # Ramp-down phase
+            for step in range(ramp_steps):
+                delay = constant_delay + (final_delay - constant_delay) * (step / ramp_steps)
+                gpio.output(pulse_pin, gpio.HIGH)
+                sleep(delay)
+                gpio.output(pulse_pin, gpio.LOW)
+                sleep(delay)
+
         # SECTION: MOTOR CONTROL
         if incoming_data == "MLeft":
-            gpio.output(direction_pin_x,cw_direction)
-            for x in range(50):
-                gpio.output(pulse_pin_x,gpio.HIGH)
-                sleep(.001)
-                gpio.output(pulse_pin_x,gpio.LOW)
-                sleep(.0005)
+            control_motor(direction_pin_x, pulse_pin_x, cw_direction)
         elif incoming_data == "MRight":
-            gpio.output(direction_pin_x,ccw_direction)
-            for x in range(50):
-                gpio.output(pulse_pin_x,gpio.HIGH)
-                sleep(.001)
-                gpio.output(pulse_pin_x,gpio.LOW)
-                sleep(.0005)
+            control_motor(direction_pin_x, pulse_pin_x, ccw_direction)
         elif incoming_data == "MUp":
-            gpio.output(direction_pin_y,cw_direction)
-            for x in range(50):
-                gpio.output(pulse_pin_y,gpio.HIGH)
-                sleep(.001)
-                gpio.output(pulse_pin_y,gpio.LOW)
-                sleep(.0005)
+            control_motor(direction_pin_y, pulse_pin_y, cw_direction)
         elif incoming_data == "MDown":
-            gpio.output(direction_pin_y,ccw_direction)
-            for x in range(50):
-                gpio.output(pulse_pin_y,gpio.HIGH)
-                sleep(.001)
-                gpio.output(pulse_pin_y,gpio.LOW)
-                sleep(.0005)
+            control_motor(direction_pin_y, pulse_pin_y, ccw_direction)
 finally:
     connection.close()
     server_socket.close()

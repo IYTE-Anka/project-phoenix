@@ -125,7 +125,7 @@ def video_stream():
                       break
 
         json_data = json.dumps(objects)
-        send_data(json_data) if objects else send_data("WARNING: No objects detected.")
+        send_data(json_data) if objects else send_data("No objects detected.")
 
         # Display FPS
         fps = "30" #FIXME: Temporary value
@@ -162,16 +162,16 @@ def on_key_press(event):
             print(e)
 
 def move_up():
-    print("Move Up")
+    send_data("MUp")
 
 def move_down():
-    print("Move Down")
+    send_data("MDown")
 
 def move_left():
-    print("Move Left")
+    send_data("MLeft")
 
 def move_right():
-    print("Move Right")
+    send_data("MRight")
 
 root = tk.Tk()
 root.bind('<KeyPress>', on_key_press)  # Bind the key press event to the on_key_press function

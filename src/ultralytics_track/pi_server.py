@@ -46,14 +46,14 @@ def handle_incoming_data(conn, data_queue):
                 continue
             
             data_size = struct.unpack('<L', data_size_bytes)[0]
-            print(f"Data size: {data_size}")
+            print("Size received.")
 
             if data_size == 0:
                 continue
             
             print("Waiting for data...")
             data = conn.recv(data_size)
-            print("\nData received:", data.decode('utf-8'), end="\n\n")
+            print("Data received.")
 
             data_queue.put(data.decode('utf-8'))
         except Exception as e:

@@ -35,7 +35,7 @@ def handle_incoming_data(conn):
             
             print("Waiting for data...")
             data = conn.recv(data_size)
-            print("Data received:", data.decode('utf-8'))
+            print("\nData received:", data.decode('utf-8'), end="\n\n")
         except Exception as e:
             print(f"Error receiving data: {e}")
             break
